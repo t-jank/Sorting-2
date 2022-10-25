@@ -10,8 +10,8 @@ import random
 
 comparison_counter = 0
 
-
-def qsort(arr):
+'''
+def qsort(arr): # Lomuto
     global comparison_counter
     if len(arr) <= 1: return arr
     p = arr.pop()
@@ -19,19 +19,48 @@ def qsort(arr):
     right = [a for a in arr if a >= p]
     comparison_counter += len(arr)
     return  qsort(left) + [p] + qsort(right)
+'''
 
-def mergesort(n):
+def partition(arr, lo, hi): # Hoare
     global comparison_counter
-    if len(n)==1:return n
-    s=int(len(n)/2)
-    a=mergesort(n[:s])
-    b=mergesort(n[s:])
+    pivot = arr[int((hi+lo)/2)]
+    i = lo - 1
+    j = hi + 1
+    while (True):
+        i += 1
+        comparison_counter += 1
+        while (arr[i] < pivot):
+            i += 1
+            comparison_counter += 1
+        j -= 1
+        comparison_counter += 1
+        while (arr[j] > pivot):
+            j -= 1
+            comparison_counter += 1
+        if (i >= j):
+            return j
+        arr[i], arr[j] = arr[j], arr[i]
+ 
+
+def quicksort(arr, lo, hi):
+    if (lo < hi):
+        pivot = partition(arr, lo, hi)
+        quicksort(arr, lo, pivot)
+        quicksort(arr, pivot + 1, hi)
+
+
+def mergesort(arr):
+    global comparison_counter
+    if len(arr)==1:return arr
+    s=int(len(arr)/2)
+    a=mergesort(arr[:s])
+    b=mergesort(arr[s:])
     a=a[::-1]
     b=b[::-1]
     i=a.pop()
     e=b.pop()
     c=[]
-    for x in range(len(n)):
+    for x in range(len(arr)):
         comparison_counter+=1
         if(i<e):
             c.append(i)
@@ -66,7 +95,9 @@ for repeat_number in range(0,10):
     for i in range(0,n):
         a.append(random.randint(0, 10))
     print(a)
-    print(qsort(a))
+    quicksort(a,0,len(a)-1)
+    print(a)
+ #   print(mergesort(a))
     print("Liczba porównań:", comparison_counter,"\n")
     a.clear()
     comparison_counter = 0
