@@ -10,6 +10,7 @@ import random
 
 comparison_counter = 0
 
+
 def qsort(arr):
     global comparison_counter
     if len(arr) <= 1: return arr
@@ -54,13 +55,19 @@ def mergesort(n):
     return c
 
 
+n = 8
+
+# ex_comp_q = 2*n*HarmonicNumber(n)-4*n+2*HarmonicNumber(n)
+# ex_comp_m = n*ceil(log(2,n))-2^(ceil(log(2,n)))+1
+# var_ex_comp_q = 7*n^2-4*(n+1)^2*HarmonicNumber(n,2)-2*(n+1)*HarmonicNumber(n)+13*n
 
 a=[]
 for repeat_number in range(0,10):
-    for i in range(0,10):
-        a.append(random.randint(0, 100))
-    print (a)
-    print(mergesort(a))
+    for i in range(0,n):
+        a.append(random.randint(0, 10))
+    print(a)
+    print(qsort(a))
     print("Liczba porównań:", comparison_counter,"\n")
     a.clear()
     comparison_counter = 0
+
