@@ -7,6 +7,7 @@ Created on Sun Oct 23 00:43:03 2022
 
 
 import random
+import statistics
 
 comparison_counter = 0
 
@@ -84,25 +85,23 @@ def mergesort(arr):
     return c
 
 
-n = 5
+n = 1000
 
 # ex_comp_q = 2*n*HarmonicNumber(n)-4*n+2*HarmonicNumber(n)
 # ex_comp_m = n*ceil(log(2,n))-2^(ceil(log(2,n)))+1
 # var_ex_comp_q = 7*n^2-4*(n+1)^2*HarmonicNumber(n,2)-2*(n+1)*HarmonicNumber(n)+13*n
 
-sum=0
-a=[]
-for repeat_number in range(0,10000):
-    for i in range(0,20):
+cc=[] # array of comparisons numbers (to calculate variance)
+a=[] # array of numbers to sort
+repeat_number = 10000
+for rn in range(0,repeat_number):
+    for i in range(0,n):
         a.append(random.randint(0, 1000000000))
-  #  print(a)
-    quicksort(a,0,len(a)-1)
-    sum+=comparison_counter
-  #  print(a)
- #   print(mergesort(a))
- #   print("Liczba porównań:", comparison_counter,"\n")
+    #quicksort(a,0,len(a)-1)
+    mergesort(a)
+    cc.append(comparison_counter)
     a.clear()
     comparison_counter = 0
 
-print('Średni wynik:', sum/repeat_number)
-
+print(statistics.mean(cc))
+print(statistics.variance(cc))
