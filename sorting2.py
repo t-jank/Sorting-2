@@ -5,22 +5,13 @@ Created on Sun Oct 23 00:43:03 2022
 @author: t-jan
 """
 
-
 import random
 import statistics
+import matplotlib.pyplot as plt
+import math
 
 comparison_counter = 0
 
-'''
-def qsort(arr): # Lomuto
-    global comparison_counter
-    if len(arr) <= 1: return arr
-    p = arr.pop()
-    left =  [a for a in arr if a < p]
-    right = [a for a in arr if a >= p]
-    comparison_counter += len(arr)
-    return  qsort(left) + [p] + qsort(right)
-'''
 
 def partition(arr, lo, hi): # Hoare
     global comparison_counter
@@ -81,11 +72,11 @@ def mergesort(arr):
                 for q in a:
                     c.append(q)
                 break
-            
     return c
 
 
 n = 1000
+alfa = 0.05
 
 # ex_comp_q = 2*n*HarmonicNumber(n)-4*n+2*HarmonicNumber(n)
 # ex_comp_m = n*ceil(log(2,n))-2^(ceil(log(2,n)))+1
@@ -93,15 +84,34 @@ n = 1000
 
 cc=[] # array of comparisons numbers (to calculate variance)
 a=[] # array of numbers to sort
-repeat_number = 10000
-for rn in range(0,repeat_number):
-    for i in range(0,n):
-        a.append(random.randint(0, 1000000000))
-    #quicksort(a,0,len(a)-1)
-    mergesort(a)
-    cc.append(comparison_counter)
-    a.clear()
-    comparison_counter = 0
+#avg=0
+nMin=10
+nMax=4000
+nStep=200
+nRepeat=100
+for n in range(nMin, nMax, nStep):
+    for rn in range(0,nRepeat):
+        for i in range(0,n):
+            a.append(random.randint(0,1000000000))
+        quicksort(a,0,len(a)-1)
+        #mergesort(a)
+ #       avg += comparison_counter / nRepeat
+        cc.append(comparison_counter)
+        a.clear()
+        comparison_counter = 0
+    avg = statistics.mean(cc)
+    plt.scatter(n,avg, color='k', marker='.')
+    delta = math.sqrt(statistics.variance(cc)/alfa)
+    plt.scatter(n,avg+delta, color='r', marker='.')
+    plt.scatter(n,avg-delta, color='r', marker='.')
+    avg=0
+    cc.clear()
+    
+plt.xlim([0,nMax])
+#plt.ylim([0,])
+plt.xlabel('n - liczba elementow do posortowania')
+plt.ylabel('En - estymacja wartosci oczekiwanej\nliczby porownan elementow')
+plt.show()
 
-print(statistics.mean(cc))
-print(statistics.variance(cc))
+#print(statistics.mean(cc))
+#print(statistics.variance(cc))
