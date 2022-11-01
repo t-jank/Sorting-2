@@ -76,7 +76,7 @@ def mergesort(arr):
 
 
 n = 1000
-alfa = 0.05
+alfa = 0.85
 
 # ex_comp_q = 2*n*HarmonicNumber(n)-4*n+2*HarmonicNumber(n)
 # ex_comp_m = n*ceil(log(2,n))-2^(ceil(log(2,n)))+1
@@ -84,34 +84,37 @@ alfa = 0.05
 
 cc=[] # array of comparisons numbers (to calculate variance)
 a=[] # array of numbers to sort
-#avg=0
 nMin=10
 nMax=4000
 nStep=200
 nRepeat=100
+
 for n in range(nMin, nMax, nStep):
     for rn in range(0,nRepeat):
         for i in range(0,n):
             a.append(random.randint(0,1000000000))
-        quicksort(a,0,len(a)-1)
-        #mergesort(a)
- #       avg += comparison_counter / nRepeat
+        #quicksort(a,0,len(a)-1)
+        mergesort(a)
         cc.append(comparison_counter)
         a.clear()
         comparison_counter = 0
     avg = statistics.mean(cc)
-    plt.scatter(n,avg, color='k', marker='.')
-    delta = math.sqrt(statistics.variance(cc)/alfa)
-    plt.scatter(n,avg+delta, color='r', marker='.')
+    delta = math.sqrt(statistics.variance(cc)/(1-alfa)) # we wzorze: delta = a
+    
+    if n==nMin:
+        plt.scatter(n,avg, color='k', marker='o',label='Estymacja wartosci oczekiwanej')
+        plt.scatter(n,avg+delta, color='r', marker='.', label='Czebyszew: P(|X-EX|⩽a) ⩾ '+str(int(100*alfa))+'%')
+    else:
+        plt.scatter(n,avg, color='k', marker='o')
+        plt.scatter(n,avg+delta, color='r', marker='.')
     plt.scatter(n,avg-delta, color='r', marker='.')
     avg=0
     cc.clear()
     
 plt.xlim([0,nMax])
-#plt.ylim([0,])
+plt.ylim(bottom=0)
 plt.xlabel('n - liczba elementow do posortowania')
-plt.ylabel('En - estymacja wartosci oczekiwanej\nliczby porownan elementow')
+plt.ylabel('Liczba porownan elementow')
+plt.legend()
 plt.show()
 
-#print(statistics.mean(cc))
-#print(statistics.variance(cc))
