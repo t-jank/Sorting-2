@@ -76,9 +76,9 @@ def mergesort(arr):
 
 
 n = 1000
-alfa = [0.75,0.85,0.95,0.995]
-alf = ['75%','85%','95%','99.5%']
-colors = ['y','m','c','r']
+alfa = [0.85]#[0.75,0.85,0.95,0.995]
+alf = ['85%']#['75%','85%','95%','99.5%']
+colors = ['r']#['y','m','c','r']
 delta=[]
 
 # ex_comp_q = 2*n*HarmonicNumber(n)-4*n+2*HarmonicNumber(n)
@@ -87,8 +87,8 @@ delta=[]
 cc=[] # array of comparisons numbers (to calculate variance)
 a=[] # array of numbers to sort
 nMin=10
-nMax=4000
-nStep=200
+nMax=2000
+nStep=500
 nRepeat=200
 sort = 'm'  # type 'q' or 'm'
 
