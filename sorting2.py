@@ -76,10 +76,12 @@ def mergesort(arr):
 
 
 n = 1000
-alfa = 0.85
+alfa = [0.75,0.85,0.95,0.995]
+alf = ['75%','85%','95%','99.5%']
+colors = ['y','m','c','r']
+delta=[]
 
 # ex_comp_q = 2*n*HarmonicNumber(n)-4*n+2*HarmonicNumber(n)
-# ex_comp_m = n*ceil(log(2,n))-2^(ceil(log(2,n)))+1
 # var_ex_comp_q = 7*n^2-4*(n+1)^2*HarmonicNumber(n,2)-2*(n+1)*HarmonicNumber(n)+13*n
 
 cc=[] # array of comparisons numbers (to calculate variance)
@@ -87,34 +89,46 @@ a=[] # array of numbers to sort
 nMin=10
 nMax=4000
 nStep=200
-nRepeat=100
+nRepeat=200
+sort = 'm'  # type 'q' or 'm'
 
 for n in range(nMin, nMax, nStep):
     for rn in range(0,nRepeat):
         for i in range(0,n):
             a.append(random.randint(0,1000000000))
-        #quicksort(a,0,len(a)-1)
-        mergesort(a)
+        if sort=='q': quicksort(a,0,len(a)-1)
+        if sort=='m': mergesort(a)
         cc.append(comparison_counter)
         a.clear()
         comparison_counter = 0
     avg = statistics.mean(cc)
-    delta = math.sqrt(statistics.variance(cc)/(1-alfa)) # we wzorze: delta = a
+    for j in range(0,len(alfa)):
+        delta.append(math.sqrt(statistics.variance(cc)/(1-alfa[j]))) # we wzorze: delta = a
+    if sort=='m': theoretical_ex_comp = n*math.ceil(math.log(n,2))-2**(math.ceil(math.log(n,2)))+1-0.2645*n
+    if sort=='q': theoretical_ex_comp = 2*n*math.log(n,math.e)
     
     if n==nMin:
+        plt.scatter(n,theoretical_ex_comp, color='b', marker='X',label='Teoretyczna wartosc oczekiwana')
         plt.scatter(n,avg, color='k', marker='o',label='Estymacja wartosci oczekiwanej')
-        plt.scatter(n,avg+delta, color='r', marker='.', label='Czebyszew: P(|X-EX|⩽a) ⩾ '+str(int(100*alfa))+'%')
+        for j in range(0,len(delta)):
+            plt.scatter(n,avg+delta[j], color=colors[j], marker='.', label='Czebyszew: P(|X-EX|⩽a) ⩾ '+alf[j])#str(int(100*alfa[j]))+'%')
     else:
         plt.scatter(n,avg, color='k', marker='o')
-        plt.scatter(n,avg+delta, color='r', marker='.')
-    plt.scatter(n,avg-delta, color='r', marker='.')
+        for j in range(0,len(delta)):
+            plt.scatter(n,avg+delta[j], color=colors[j], marker='.')
+        plt.scatter(n,theoretical_ex_comp, color='b', marker='X')
+    for j in range(0,len(delta)):
+        plt.scatter(n,avg-delta[j], color=colors[j], marker='.')
     avg=0
     cc.clear()
+    delta.clear()
     
 plt.xlim([0,nMax])
 plt.ylim(bottom=0)
 plt.xlabel('n - liczba elementow do posortowania')
 plt.ylabel('Liczba porownan elementow')
+if sort=='m': plt.title('MergeSort')
+if sort=='q': plt.title("QuickSort, partycjonowanie Hoare'a")
 plt.legend()
 plt.show()
 
