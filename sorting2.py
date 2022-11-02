@@ -88,9 +88,9 @@ cc=[] # array of comparisons numbers (to calculate variance)
 a=[] # array of numbers to sort
 nMin=10
 nMax=2000
-nStep=500
+nStep=1000
 nRepeat=200
-sort = 'm'  # type 'q' or 'm'
+sort = 'q'  # type 'q' or 'm'
 
 for n in range(nMin, nMax, nStep):
     for rn in range(0,nRepeat):
@@ -106,7 +106,8 @@ for n in range(nMin, nMax, nStep):
         delta.append(math.sqrt(statistics.variance(cc)/(1-alfa[j]))) # we wzorze: delta = a
     if sort=='m': theoretical_ex_comp = n*math.ceil(math.log(n,2))-2**(math.ceil(math.log(n,2)))+1-0.2645*n
     if sort=='q': theoretical_ex_comp = 2*n*math.log(n,math.e)
-    
+ 
+    plt.figure(1)
     if n==nMin:
         plt.scatter(n,theoretical_ex_comp, color='b', marker='X',label='Teoretyczna wartosc oczekiwana')
         plt.scatter(n,avg, color='k', marker='o',label='Estymacja wartosci oczekiwanej')
@@ -122,7 +123,32 @@ for n in range(nMin, nMax, nStep):
     avg=0
     cc.clear()
     delta.clear()
-    
+
+
+########### podpunkt b #################
+## ustalone n, rysujemy histogram z wynikami liczby porownan
+### zaznaczenie punktu n=1000 do dalszej analizy ###
+n = 1000
+nRepeat = 100
+color='lime'
+for rn in range(0,1000):
+    for i in range(0,n):
+        a.append(random.randint(0,1000000000))
+    if sort=='q': quicksort(a,0,len(a)-1)
+    if sort=='m': mergesort(a)
+    cc.append(comparison_counter)
+    a.clear()
+    comparison_counter=0
+if sort=='m': theoretical_ex_comp = n*math.ceil(math.log(n,2))-2**(math.ceil(math.log(n,2)))+1-0.2645*n
+if sort=='q': theoretical_ex_comp = 2*n*math.log(n,math.e)
+alfa=0.85
+delta = math.sqrt(statistics.variance(cc)/(1-alfa))
+avg=statistics.mean(cc)
+plt.scatter(n,theoretical_ex_comp, color=color, marker='X')
+plt.scatter(n,avg, color=color, marker='o')
+plt.scatter(n,avg+delta, color=color, marker='.')
+plt.scatter(n,avg-delta, color=color, marker='.')
+
 plt.xlim([0,nMax])
 plt.ylim(bottom=0)
 plt.xlabel('n - liczba elementow do posortowania')
@@ -131,4 +157,16 @@ if sort=='m': plt.title('MergeSort')
 if sort=='q': plt.title("QuickSort, partycjonowanie Hoare'a")
 plt.legend()
 plt.show()
+
+
+plt.figure(2)
+plt.hist(cc)#,bins=15)
+plt.xlabel('Liczba porownan elementow')
+plt.ylabel('Liczba przypadków\n(liczba eksperymentów = '+str(nRepeat)+')')
+if sort=='m': plt.title('MergeSort, n = '+str(n))
+if sort=='q': plt.title("QuickSort (partycjonowanie Hoare'a), n = "+str(n))
+plt.show()
+
+
+print(max(cc), min(cc))
 
