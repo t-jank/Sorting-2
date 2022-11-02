@@ -78,7 +78,7 @@ def mergesort(arr):
 n = 1000
 alfa = [0.85]#[0.75,0.85,0.95,0.995]
 alf = ['85%']#['75%','85%','95%','99.5%']
-colors = ['r']#['y','m','c','r']
+colors = ['crimson']#['y','m','c','r']
 delta=[]
 
 # ex_comp_q = 2*n*HarmonicNumber(n)-4*n+2*HarmonicNumber(n)
@@ -87,8 +87,8 @@ delta=[]
 cc=[] # array of comparisons numbers (to calculate variance)
 a=[] # array of numbers to sort
 nMin=10
-nMax=2000
-nStep=1000
+nMax=4000
+nStep=200
 nRepeat=200
 sort = 'q'  # type 'q' or 'm'
 
@@ -109,8 +109,8 @@ for n in range(nMin, nMax, nStep):
  
     plt.figure(1)
     if n==nMin:
-        plt.scatter(n,theoretical_ex_comp, color='b', marker='X',label='Teoretyczna wartosc oczekiwana')
-        plt.scatter(n,avg, color='k', marker='o',label='Estymacja wartosci oczekiwanej')
+        plt.scatter(n,theoretical_ex_comp, color='b', marker='X',label='Teoretyczna wartość oczekiwana')
+        plt.scatter(n,avg, color='k', marker='o',label='Estymacja wartości oczekiwanej')
         for j in range(0,len(delta)):
             plt.scatter(n,avg+delta[j], color=colors[j], marker='.', label='Czebyszew: P(|X-EX|⩽a) ⩾ '+alf[j])#str(int(100*alfa[j]))+'%')
     else:
@@ -129,9 +129,9 @@ for n in range(nMin, nMax, nStep):
 ## ustalone n, rysujemy histogram z wynikami liczby porownan
 ### zaznaczenie punktu n=1000 do dalszej analizy ###
 n = 1000
-nRepeat = 100
+nRepeat = 1000
 color='lime'
-for rn in range(0,1000):
+for rn in range(0,nRepeat):
     for i in range(0,n):
         a.append(random.randint(0,1000000000))
     if sort=='q': quicksort(a,0,len(a)-1)
@@ -148,11 +148,16 @@ plt.scatter(n,theoretical_ex_comp, color=color, marker='X')
 plt.scatter(n,avg, color=color, marker='o')
 plt.scatter(n,avg+delta, color=color, marker='.')
 plt.scatter(n,avg-delta, color=color, marker='.')
+odch_od_sr=[]
+for o in range(0,len(cc)):
+    odch_od_sr.append(abs(cc[o]-avg))
+odch_od_sr.sort()
+rzecz_odch = odch_od_sr[int(alfa*len(odch_od_sr))]
 
 plt.xlim([0,nMax])
 plt.ylim(bottom=0)
-plt.xlabel('n - liczba elementow do posortowania')
-plt.ylabel('Liczba porownan elementow')
+plt.xlabel('n - liczba elementów do posortowania')
+plt.ylabel('Liczba porównań elementów')
 if sort=='m': plt.title('MergeSort')
 if sort=='q': plt.title("QuickSort, partycjonowanie Hoare'a")
 plt.legend()
@@ -161,12 +166,18 @@ plt.show()
 
 plt.figure(2)
 plt.hist(cc)#,bins=15)
-plt.xlabel('Liczba porownan elementow')
+plt.axvline(x=avg,color='lime',label='Estymacja wartości oczekiwanej')
+plt.axvline(x=theoretical_ex_comp, color='dimgrey',label='Teoretyczna wartość oczekiwana')
+plt.axvline(x=avg+delta,color='crimson',label='Czebyszew: P(|X-EX|⩽'+str(math.ceil(delta))+') ⩾ '+str(int(100*alfa))+'%')
+plt.axvline(x=avg-delta,color='crimson')
+plt.axvline(x=avg+rzecz_odch,color='orangered',label='Rzeczywistośc: P(|X-EX|⩽'+str(math.ceil(rzecz_odch))+') ⩾ '+str(int(100*alfa))+'%')
+plt.axvline(x=avg-rzecz_odch,color='orangered')
+
+plt.xlabel('Liczba porównań elementów')
 plt.ylabel('Liczba przypadków\n(liczba eksperymentów = '+str(nRepeat)+')')
 if sort=='m': plt.title('MergeSort, n = '+str(n))
 if sort=='q': plt.title("QuickSort (partycjonowanie Hoare'a), n = "+str(n))
+plt.legend()
 plt.show()
 
-
-print(max(cc), min(cc))
-
+# orangered, crimson, yellow
