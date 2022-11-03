@@ -30,9 +30,15 @@ def partition(arr, lo, hi): # Hoare
             j -= 1
             comparison_counter += 1
         if (i >= j):
+            #print(len(arr),lo,hi, comparison_counter) # do badania ile porownan
+            # wykonuje pojedyncze partycjonowanie Hoare. Mozliwe wartosci rozne
+            # dla roznych danych wejsciowych, ale nie powinny przekroczyc n+c,
+            # gdzie 'c' jest niewielka stala.
+            # Przykladowe ustawienie parametrow (nizej):
+            # nMin=5, nMax=21, nStep=5, nRepeat=2, sort = 'q'
             return j
         arr[i], arr[j] = arr[j], arr[i]
- 
+    
 
 def quicksort(arr, lo, hi):
     if (lo < hi):
@@ -80,16 +86,15 @@ alfa = [0.85]#[0.75,0.85,0.95,0.995]
 alf = ['85%']#['75%','85%','95%','99.5%']
 colors = ['crimson']#['y','m','c','r']
 delta=[]
+theta=[]
 
-# ex_comp_q = 2*n*HarmonicNumber(n)-4*n+2*HarmonicNumber(n)
-# var_ex_comp_q = 7*n^2-4*(n+1)^2*HarmonicNumber(n,2)-2*(n+1)*HarmonicNumber(n)+13*n
 
 cc=[] # array of comparisons numbers (to calculate variance)
 a=[] # array of numbers to sort
 nMin=10
-nMax=4000
-nStep=200
-nRepeat=200
+nMax=10000
+nStep=100
+nRepeat=100
 sort = 'q'  # type 'q' or 'm'
 
 for n in range(nMin, nMax, nStep):
@@ -105,7 +110,8 @@ for n in range(nMin, nMax, nStep):
     for j in range(0,len(alfa)):
         delta.append(math.sqrt(statistics.variance(cc)/(1-alfa[j]))) # we wzorze: delta = a
     if sort=='m': theoretical_ex_comp = n*math.ceil(math.log(n,2))-2**(math.ceil(math.log(n,2)))+1-0.2645*n
-    if sort=='q': theoretical_ex_comp = 2*n*math.log(n,math.e)
+    if sort=='q': theoretical_ex_comp = 2*n*math.log(n,math.e) # niby 2*n*HarmonicNumber(n)-4*n+2*HarmonicNumber(n)
+    #theta.append((avg-theoretical_ex_comp)/n)
  
     plt.figure(1)
     if n==nMin:
@@ -170,14 +176,32 @@ plt.axvline(x=avg,color='lime',label='Estymacja wartości oczekiwanej')
 plt.axvline(x=theoretical_ex_comp, color='dimgrey',label='Teoretyczna wartość oczekiwana')
 plt.axvline(x=avg+delta,color='crimson',label='Czebyszew: P(|X-EX|⩽'+str(math.ceil(delta))+') ⩾ '+str(int(100*alfa))+'%')
 plt.axvline(x=avg-delta,color='crimson')
-plt.axvline(x=avg+rzecz_odch,color='orangered',label='Rzeczywistośc: P(|X-EX|⩽'+str(math.ceil(rzecz_odch))+') ⩾ '+str(int(100*alfa))+'%')
+plt.axvline(x=avg+rzecz_odch,color='orangered',label='Rzeczywistość: P(|X-EX|⩽'+str(math.ceil(rzecz_odch))+') ⩾ '+str(int(100*alfa))+'%')
 plt.axvline(x=avg-rzecz_odch,color='orangered')
 
 plt.xlabel('Liczba porównań elementów')
 plt.ylabel('Liczba przypadków\n(liczba eksperymentów = '+str(nRepeat)+')')
-if sort=='m': plt.title('MergeSort, n = '+str(n))
-if sort=='q': plt.title("QuickSort (partycjonowanie Hoare'a), n = "+str(n))
+if sort=='m': plt.title('MergeSort, n='+str(n))
+if sort=='q': plt.title("QuickSort (partycjonowanie Hoare'a), n="+str(n))
 plt.legend()
+
+# theo_var_q = 7*n^2-4*(n+1)^2*HarmonicNumber(n,2)-2*(n+1)*HarmonicNumber(n)+13*n
+# dla n=1000: theo_var_q = 409117.8
+s = 'Wariancja: '+str(round(statistics.variance(cc),1))
+if sort=='q' and n==1000: s+='\nWartość teoretyczna: 409117.8'
+plt.figtext(0.13,0.17, s, ha="left", va="center",color='deeppink')
 plt.show()
 
-# orangered, crimson, yellow
+'''
+# badanie thety - stałej przy n
+plt.figure(3)
+n=[]
+for i in range(nMin, nMax, nStep):
+    n.append(i)
+for i in range(0,len(theta)):
+    plt.scatter(n[i],theta[i])
+plt.title('"Wykres powinien dazyc do stalej"')
+plt.xlabel('n')
+plt.ylabel('Theta = (est_avg - theo_avg) / n')
+plt.show()
+'''
