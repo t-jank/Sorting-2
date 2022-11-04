@@ -92,10 +92,10 @@ theta=[]
 cc=[] # array of comparisons numbers (to calculate variance)
 a=[] # array of numbers to sort
 nMin=10
-nMax=10000
-nStep=100
+nMax=4000
+nStep=200
 nRepeat=100
-sort = 'q'  # type 'q' or 'm'
+sort = 'm'  # type 'q' or 'm'
 
 for n in range(nMin, nMax, nStep):
     for rn in range(0,nRepeat):
@@ -111,7 +111,7 @@ for n in range(nMin, nMax, nStep):
         delta.append(math.sqrt(statistics.variance(cc)/(1-alfa[j]))) # we wzorze: delta = a
     if sort=='m': theoretical_ex_comp = n*math.ceil(math.log(n,2))-2**(math.ceil(math.log(n,2)))+1-0.2645*n
     if sort=='q': theoretical_ex_comp = 2*n*math.log(n,math.e) # niby 2*n*HarmonicNumber(n)-4*n+2*HarmonicNumber(n)
-    #theta.append((avg-theoretical_ex_comp)/n)
+  #  theta.append((avg-theoretical_ex_comp)/n)
  
     plt.figure(1)
     if n==nMin:
@@ -187,8 +187,10 @@ plt.legend()
 
 # theo_var_q = 7*n^2-4*(n+1)^2*HarmonicNumber(n,2)-2*(n+1)*HarmonicNumber(n)+13*n
 # dla n=1000: theo_var_q = 409117.8
+# theo_var_m = nφ(lg(n))−2+o(1), φ(x)∈[0.30,0.37], dla n=1000: theo_var_m = 898
 s = 'Wariancja: '+str(round(statistics.variance(cc),1))
 if sort=='q' and n==1000: s+='\nWartość teoretyczna: 409117.8'
+if sort=='m' and n==1000: s+='\nWartość teoretyczna: 898'
 plt.figtext(0.13,0.17, s, ha="left", va="center",color='deeppink')
 plt.show()
 
