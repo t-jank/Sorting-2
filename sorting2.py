@@ -82,9 +82,9 @@ def mergesort(arr):
 
 
 n = 1000
-alfa = [0.85]#[0.75,0.85,0.95,0.995]
-alf = ['85%']#['75%','85%','95%','99.5%']
-colors = ['crimson']#['y','m','c','r']
+alfa = [0.75,0.85,0.95,0.995]
+alf = ['75%','85%','95%','99.5%']
+colors = ['y','m','c','r']
 delta=[]
 theta=[]
 
@@ -187,10 +187,10 @@ plt.legend()
 
 # theo_var_q = 7*n^2-4*(n+1)^2*HarmonicNumber(n,2)-2*(n+1)*HarmonicNumber(n)+13*n
 # dla n=1000: theo_var_q = 409117.8
-# theo_var_m = nφ(lg(n))−2+o(1), φ(x)∈[0.30,0.37], dla n=1000: theo_var_m = 898
+# theo_var_m = nφ(log(2,n))−2+o(1), φ(x)∈[0.30,0.37], dla n=1000: theo_var_m = 2987.74
 s = 'Wariancja: '+str(round(statistics.variance(cc),1))
 if sort=='q' and n==1000: s+='\nWartość teoretyczna: 409117.8'
-if sort=='m' and n==1000: s+='\nWartość teoretyczna: 898'
+if sort=='m' and n==1000: s+='\nWartość teoretyczna: 2987.74'
 plt.figtext(0.13,0.17, s, ha="left", va="center",color='deeppink')
 plt.show()
 
