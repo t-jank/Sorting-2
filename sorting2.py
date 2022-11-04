@@ -95,7 +95,7 @@ nMin=10
 nMax=4000
 nStep=200
 nRepeat=100
-sort = 'm'  # type 'q' or 'm'
+sort = 'q'  # type 'q' or 'm'
 
 for n in range(nMin, nMax, nStep):
     for rn in range(0,nRepeat):
